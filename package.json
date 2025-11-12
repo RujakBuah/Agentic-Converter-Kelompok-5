@@ -1,0 +1,24 @@
+{
+  "name": "agentic-converter-websemantics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RujakBuah/Agentic-Converter-Kelompok-5.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RujakBuah/Agentic-Converter-Kelompok-5/issues"
+  },
+  "homepage": "https://github.com/RujakBuah/Agentic-Converter-Kelompok-5#readme"
+}
