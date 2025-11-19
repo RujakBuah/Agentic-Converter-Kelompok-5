@@ -1,22 +1,27 @@
 {
-  "id": "{{ pattern.id.split('/')[-1] }}",
-  "title": "{{ pattern.title|e }}",
+  "pattern_name": "{{ pattern.name }}",
   "nodes": [
-    {% for s in pattern.steps %}
+    {% for step in pattern.steps %}
     {
-      "id": "n{{ loop.index }}",
-      "type": "action",
-      "meta": {
-        "task": "{{ s.task.split('/')[-1] if s.task else '' }}",
-        "agent": "{{ s.agent.split('/')[-1] if s.agent else '' }}",
-        "tool": "{{ s.tool.split('/')[-1] if s.tool else '' }}"
-      }
+      "id": "{{ step.id }}",
+      "type": "{{ step.type }}",
+      "agent": "{{ step.agent }}",
+      "tools": [
+        {% for tool in step.tools %}
+        "{{ tool }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
     }{% if not loop.last %},{% endif %}
     {% endfor %}
   ],
   "edges": [
-    {% for s in pattern.steps[:-1] %}
-    {"from": "n{{ loop.index }}", "to": "n{{ loop.index + 1 }}"}{% if not loop.last %},{% endif %}
+    {% for step in pattern.steps %}
+      {% for next_id in step.next %}
+      {
+        "from": "{{ step.id }}",
+        "to": "{{ next_id }}"
+      }{% if not (loop.last and loop.parent.last) %},{% endif %}
+      {% endfor %}
     {% endfor %}
   ]
 }

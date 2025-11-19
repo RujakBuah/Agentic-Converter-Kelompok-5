@@ -1,23 +1,36 @@
-// Auto-generated Mastra assistant for pattern {{ pattern.id }}
-export const {{ pattern.id.split('/')[-1].replace('-', '_') }} = {
-  name: "{{ pattern.title or pattern.id.split('/')[-1] }}",
-  instruction: `Auto-generated assistant from KG pattern {{ pattern.id }}`,
-  workflows: [
+import { Assistant } from "mastra";
+
+export const {{ pattern.name }} = new Assistant({
+  name: "{{ pattern.name }}",
+  description: "Generated from Agentic AI Pattern KG",
+
+  agents: [
+    {% for agent in pattern.agents %}
     {
-      id: "workflow_{{ pattern.id.split('/')[-1] }}",
-      steps: [
-        {% for s in pattern.steps %}
-        {
-          id: "step_{{ loop.index }}",
-          title: "{{ s.task.split('/')[-1] if s.task else 'step_' ~ loop.index|string }}",
-          run: async (ctx) => {
-            // TODO: implement step performed by {{ s.agent.split('/')[-1] if s.agent else 'unknown' }}
-            // TODO: integrate tool {{ s.tool.split('/')[-1] if s.tool else 'none' }}
-            return { ok: true };
-          }
-        }{% if not loop.last %},{% endif %}
+      name: "{{ agent }}",
+      behavior: "default"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  tools: [
+    {% for tool in pattern.tools %}
+    "{{ tool }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ],
+
+  workflow: [
+    {% for step in pattern.steps %}
+    {
+      id: "{{ step.id }}",
+      type: "{{ step.type }}",
+      agent: "{{ step.agent }}",
+      next: [
+        {% for n in step.next %}
+        "{{ n }}"{% if not loop.last %}, {% endif %}
         {% endfor %}
       ]
-    }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
   ]
-};
+});
