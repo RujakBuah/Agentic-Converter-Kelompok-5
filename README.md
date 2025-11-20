@@ -42,10 +42,17 @@ Ongoing:
 - Extending mapping and semantic validation
 
 ## How to Run
+Setup python environment:
+```
+python3 -m venv .venv
+source .venv/bin/activate
+pip install rdflib jinja2 pyyaml
+```
+Run:
 ```
 pip install -r requirements.txt
-python pipeline/codegen.py examples/kg_sample.ttl examples/generated
-python pipeline/tests_smoke.py
+python3 pipeline/codegen.py examples/kg_sample.ttl examples/generated
+python3 pipeline/tests_smoke.py
 ```
 
 ## Contributors
