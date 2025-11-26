@@ -1,0 +1,35 @@
+--- EXECUTION REPORT FOR: multi_agent_langgraph.py ---
+--- SOURCE: output_frameworks\langgraph\multi_agent_langgraph.py ---
+
+STATUS: SUCCESS
+==============================
+
+LangGraph 'MultiAgent' compiled.
+Build success. Generating Mermaid Graph...
+
+--- MERMAID CODE (Copy to mermaid.live) ---
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	multi_agent_node(multi_agent_node)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> multi_agent_node;
+	multi_agent_node --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+
+-------------------------------------------
+
+[Info] Attempting to save PNG (requires internet)...
+[SUCCESS] Graph image saved to: multi_agent_graph.png
+
+--- Starting Simulation ---
+   [ACT] Node 'multi_agent_node' is working...
+
+--- Final State Content ---
+{'messages': ['START_SIGNAL', 'Processed by multi_agent_node']}

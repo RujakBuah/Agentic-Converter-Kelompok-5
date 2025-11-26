@@ -1,0 +1,38 @@
+--- EXECUTION REPORT FOR: hr_assistant_langgraph.py ---
+--- SOURCE: output_frameworks\langgraph\hr_assistant_langgraph.py ---
+
+STATUS: SUCCESS
+==============================
+
+LangGraph 'HRAssistant' compiled.
+Build success. Generating Mermaid Graph...
+
+--- MERMAID CODE (Copy to mermaid.live) ---
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	recruiter_node(recruiter_node)
+	onboarding_guide_node(onboarding_guide_node)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> recruiter_node;
+	recruiter_node --> onboarding_guide_node;
+	onboarding_guide_node --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+
+-------------------------------------------
+
+[Info] Attempting to save PNG (requires internet)...
+[SUCCESS] Graph image saved to: hr_assistant_graph.png
+
+--- Starting Simulation ---
+   [ACT] Node 'recruiter' is working...
+   [ACT] Node 'onboarding_guide' is working...
+
+--- Final State Content ---
+{'messages': ['START_SIGNAL', 'Processed by recruiter_node', 'Processed by onboarding_guide_node']}

@@ -1,0 +1,38 @@
+--- EXECUTION REPORT FOR: analyzer_langgraph.py ---
+--- SOURCE: output_frameworks\langgraph\analyzer_langgraph.py ---
+
+STATUS: SUCCESS
+==============================
+
+LangGraph 'Analyzer' compiled.
+Build success. Generating Mermaid Graph...
+
+--- MERMAID CODE (Copy to mermaid.live) ---
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	analyzer_node(analyzer_node)
+	analyze_node(analyze_node)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> analyzer_node;
+	analyzer_node --> analyze_node;
+	analyze_node --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc
+
+-------------------------------------------
+
+[Info] Attempting to save PNG (requires internet)...
+[SUCCESS] Graph image saved to: analyzer_graph.png
+
+--- Starting Simulation ---
+   [ACT] Node 'analyzer_node' is working...
+   [ACT] Node 'analyze_node' is working...
+
+--- Final State Content ---
+{'messages': ['START_SIGNAL', 'Processed by analyzer_node', 'Processed by analyze_node']}
