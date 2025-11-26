@@ -1,62 +1,42 @@
-# Agentic Converter — Kelompok 5 (Week 3)
+# Agentic AI Framework Generator (Group 5)
 
-## Overview
-This project implements an automated pipeline that converts Agentic AI Pattern Knowledge Graphs (KGs) into executable code for two Agentic AI frameworks: LangGraph and MastraAI.
+Tools ini secara otomatis mengonversi pola **Agentic AI** dari format Knowledge Graph (RDF) menjadi kode kerangka kerja yang dapat dieksekusi untuk **LangGraph (Python)** dan **Mastra AI (TypeScript)**.
 
-## Motivation
-Agentic AI workflows consist of reusable patterns involving agents, tasks, tools, and transitions. Group 3 provided these patterns as Knowledge Graphs based on the Agentic AI Ontology. This project automates the conversion of those semantic representations into framework-specific runnable code.
+Proyek ini dibuat untuk memenuhi tugas mata kuliah Agentic AI Framework berdasarkan paper *K-CAP 2025*.
 
-## Project Architecture
+## Fitur Utama
+- **Dual Output Generation:** Menghasilkan kode Python (LangGraph) dan TypeScript (Mastra) sekaligus dari satu sumber RDF.
+- **Robust Extraction:** Mampu menangani file RDF dengan atau tanpa header prefix standar.
+- **Runnable Code:** Kode hasil generate dilengkapi blok eksekusi, simulasi state (LangGraph), dan bypass typing (Mastra) agar langsung bisa dijalankan.
+- **Synthetic Data Generator:** Termasuk script untuk menghasilkan pola dummy guna pengujian skala besar (25+ pola).
+
+## Struktur Folder
+- `input_rdfs/`: Tempat menaruh file .rdf (sumber Knowledge Graph).
+- `output_frameworks/`: Hasil generate kode LangGraph (.py).
+- `mastra_project/`: Hasil generate kode Mastra (.ts) yang siap eksekusi.
+- `extractor.py`: Modul parsing RDF.
+- `codegen.py`: Modul template generator (Python & TypeScript).
+
+## Cara Menjalankan
+
+### 1. Prasyarat
+- Python 3.8+
+- Node.js & npm (untuk Mastra)
+- Library Python: `rdflib`
+- Library Node: `tsx`
+
+### 2. Generate Framework
+Jalankan perintah ini untuk memproses semua RDF di `input_rdfs`:
 ```
-agentic-converter-kelompok-5/
-- pipeline/
-  - ingest.py
-  - extractor.py
-  - codegen.py
-  - mappings.yaml
-  - templates/
-    - langgraph/graph.j2.json
-    - mastra/assistant.j2.ts
-- examples/kg_sample.ttl
-- reports/checklist_week2.md
-- requirements.txt
-- package.json
+python main.py
 ```
-
-## Pipeline Modules
-1. Ingestion Module
-2. Extraction Module
-3. Mapping Module
-4. Code Generation Module
-
-## Testing
-The script pipeline/tests_smoke.py performs smoke tests validating generated output and produces reports/checklist_week(n).md
-
-## Week 3 Progress Summary
-- Pipeline fully operational for sample patterns
-- Templates validated for LangGraph and MastraAI
-- Extraction correctness validated on sample KG
-
-Ongoing:
-- Expanding SPARQL rules and scaling to 25 patterns
-- Extending mapping and semantic validation
-
-## How to Run
-Setup python environment:
+3. Menjalankan Hasil (Demo)
+LangGraph (Python):
 ```
-python3 -m venv .venv
-source .venv/bin/activate
-pip install rdflib jinja2 pyyaml
+python output_frameworks/langgraph/customer_support_langgraph.py
 ```
-Run:
+Mastra AI (TypeScript):
 ```
-pip install -r requirements.txt
-python3 pipeline/codegen.py examples/kg_sample.ttl examples/generated
-python3 pipeline/tests_smoke.py
+cd mastra_project
+npx tsx customer_support_mastra.ts
 ```
-
-## Contributors
-Kelompok 5 - Semantic Web 2025
-- Sultan Rizqinta Sinuraya
-- Muhammad Farhan Hanim
-- Muhammad Fariz

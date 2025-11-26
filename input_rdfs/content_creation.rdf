@@ -1,0 +1,72 @@
+@prefix agento: <http://example.org/agento#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix mastra: <http://example.org/mastraai#> .
+
+# Classes
+agento:System a rdfs:Class ;
+    rdfs:label "System" ;
+    rdfs:comment "Represents a multi-agent system or pattern context." .
+
+agento:Agent a rdfs:Class ;
+    rdfs:label "Agent" ;
+    rdfs:comment "An agent executing a role or task in the system." .
+
+agento:LLMModel a rdfs:Class ;
+    rdfs:label "LLMModel" ;
+    rdfs:comment "Represents the LLM model used by an agent." .
+
+# Object Properties
+agento:hasAgent a rdf:Property ;
+    rdfs:domain agento:System ;
+    rdfs:range agento:Agent ;
+    rdfs:comment "Connects the system/pattern to the agents configured within it." .
+
+agento:configuredBy a rdf:Property ;
+    rdfs:domain agento:Agent ;
+    rdfs:range agento:LLMModel ;
+    rdfs:comment "Indicates that an agent is configured using a specific LLM model." .
+
+# Datatype Properties
+agento:role a rdf:Property ;
+    rdfs:domain agento:Agent ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Each agent declares a functional role." .
+
+agento:instructions a rdf:Property ;
+    rdfs:domain agento:Agent ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Contains the instructions guiding agent behavior." .
+
+agento:modelName a rdf:Property ;
+    rdfs:domain agento:LLMModel ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the LLM model used by each agent." .
+
+# Optional Properties
+agento:vendorClass a rdf:Property ;
+    rdfs:domain agento:Agent ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Allows cross-framework mapping of class names." .
+
+# Instances
+mastra:contentCreationPipeline a agento:System ;
+    agento:hasAgent mastra:ideator, mastra:writer, mastra:editor ;
+    rdfs:label "Content Creation Pipeline" .
+
+mastra:ideator a agento:Agent ;
+    agento:role "Content Ideator"^^xsd:string ;
+    agento:instructions "Generate content ideas"^^xsd:string ;
+    agento:configuredBy mastra:gpt4 .
+
+mastra:writer a agento:Agent ;
+    agento:role "Content Writer"^^xsd:string ;
+    agento:instructions "Write engaging content"^^xsd:string ;
+    agento:configuredBy mastra:gpt4 .
+
+mastra:editor a agento:Agent ;
+    agento:role "Content Editor"^^xsd:string ;
+    agento:instructions "Edit and refine content"^^xsd:string ;
+    agento:configuredBy mastra:gpt4 .
+
+mastra:gpt4 a agento:LLMModel ;
+    agento:modelName "gpt-4"^^xsd:string .
