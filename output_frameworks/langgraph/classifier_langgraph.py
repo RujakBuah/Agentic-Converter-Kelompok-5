@@ -1,6 +1,6 @@
 # Generated LangGraph Framework
-# Source: classifier.rdf
-# System: AgenticSystem
+# Source: classifier.ttl
+# System: Classifier
 
 from langgraph.graph import StateGraph, START, END
 from typing import Dict, List, Annotated
@@ -11,32 +11,37 @@ class GraphState(Dict):
 
 # --- NODE FUNCTIONS ---
 
-def classifier_node_node(state: GraphState):
-    # Original Logic: lambda x: x
+def classifier_node(state: GraphState):
+    # Original Logic: Execute classifier_node
     print(f"   [ACT] Node 'classifier_node' is working...")
-    new_msg = f"Processed by classifier_node"
-    return {"messages": [new_msg]}
+    return {"messages": ["Processed by classifier_node"]}
 
 
 # --- GRAPH CONSTRUCTION ---
 workflow = StateGraph(GraphState)
 
-workflow.add_node('classifier_node', classifier_node_node)
+workflow.add_node('classifier_node', classifier_node)
+workflow.add_edge(START, 'classifier_node')
 workflow.add_edge('classifier_node', END)
 
-workflow.add_edge(START, 'classifier_node')
-
 app = workflow.compile()
-print(f"LangGraph 'AgenticSystem' compiled.")
+print(f"LangGraph 'Classifier' compiled.")
 
 
 if __name__ == "__main__":
     try:
-        print("Build success. Visualizing Graph...")
+        print("Build success. Generating Mermaid Graph...")
+        
+        # 1. Print Mermaid Code (Text) - Tetap berguna untuk debugging/copy-paste
         try:
-            print(app.get_graph().draw_ascii())
-        except Exception as e:
-            print(f"[Info] Visualisasi Gagal: {e}")
+            mermaid_code = app.get_graph().draw_mermaid()
+            print("\n--- MERMAID CODE (Copy to mermaid.live) ---")
+            print(mermaid_code)
+            print("-------------------------------------------\n")
+        except Exception:
+            print("[Info] Mermaid code generation failed (Graph might be empty).")
+
+        # Catatan: Image generation sekarang ditangani oleh 'visualize_batch.py'
 
         print("\n--- Starting Simulation ---")
         initial_state = {"messages": ["START_SIGNAL"]}

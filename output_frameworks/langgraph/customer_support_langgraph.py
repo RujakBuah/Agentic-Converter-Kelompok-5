@@ -1,5 +1,5 @@
 # Generated LangGraph Framework
-# Source: customer_support.rdf
+# Source: customer_support.ttl
 # System: CustomerSupportSystem
 
 from langgraph.graph import StateGraph, START, END
@@ -11,28 +11,25 @@ class GraphState(Dict):
 
 # --- NODE FUNCTIONS ---
 
-def supportagent_node(state: GraphState):
-    # Original Logic: Handle customer inquiries
-    print(f"   [ACT] Node 'supportagent' is working...")
-    new_msg = f"Processed by supportagent"
-    return {"messages": [new_msg]}
+def support_agent_node(state: GraphState):
+    # Original Logic: Execute support_agent
+    print(f"   [ACT] Node 'support_agent' is working...")
+    return {"messages": ["Processed by support_agent_node"]}
 
-def escalationagent_node(state: GraphState):
-    # Original Logic: Handle complex issues
-    print(f"   [ACT] Node 'escalationagent' is working...")
-    new_msg = f"Processed by escalationagent"
-    return {"messages": [new_msg]}
+def escalation_agent_node(state: GraphState):
+    # Original Logic: Execute escalation_agent
+    print(f"   [ACT] Node 'escalation_agent' is working...")
+    return {"messages": ["Processed by escalation_agent_node"]}
 
 
 # --- GRAPH CONSTRUCTION ---
 workflow = StateGraph(GraphState)
 
-workflow.add_node('supportagent', supportagent_node)
-workflow.add_edge('supportagent', 'escalationagent')
-workflow.add_node('escalationagent', escalationagent_node)
-workflow.add_edge('escalationagent', END)
-
-workflow.add_edge(START, 'supportagent')
+workflow.add_node('support_agent_node', support_agent_node)
+workflow.add_node('escalation_agent_node', escalation_agent_node)
+workflow.add_edge('support_agent_node', 'escalation_agent_node')
+workflow.add_edge(START, 'support_agent_node')
+workflow.add_edge('escalation_agent_node', END)
 
 app = workflow.compile()
 print(f"LangGraph 'CustomerSupportSystem' compiled.")
@@ -40,11 +37,18 @@ print(f"LangGraph 'CustomerSupportSystem' compiled.")
 
 if __name__ == "__main__":
     try:
-        print("Build success. Visualizing Graph...")
+        print("Build success. Generating Mermaid Graph...")
+        
+        # 1. Print Mermaid Code (Text) - Tetap berguna untuk debugging/copy-paste
         try:
-            print(app.get_graph().draw_ascii())
-        except Exception as e:
-            print(f"[Info] Visualisasi Gagal: {e}")
+            mermaid_code = app.get_graph().draw_mermaid()
+            print("\n--- MERMAID CODE (Copy to mermaid.live) ---")
+            print(mermaid_code)
+            print("-------------------------------------------\n")
+        except Exception:
+            print("[Info] Mermaid code generation failed (Graph might be empty).")
+
+        # Catatan: Image generation sekarang ditangani oleh 'visualize_batch.py'
 
         print("\n--- Starting Simulation ---")
         initial_state = {"messages": ["START_SIGNAL"]}

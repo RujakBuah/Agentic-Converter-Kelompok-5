@@ -1,6 +1,6 @@
 // Generated Mastra AI Framework (TypeScript)
-// Source: classifier.rdf
-// System: AgenticSystem
+// Source: classifier.ttl
+// System: Classifier
 
 import { Agent, Workflow } from '@mastra/core';
 import { z } from 'zod';
@@ -8,19 +8,19 @@ import { z } from 'zod';
 // --- AGENT DEFINITIONS ---
 
 const classifier_node = new Agent({
-  name: "classifier_node",
-  instructions: "lambda x: x",
+  name: "classifier_node", 
+  instructions: "Execute classifier_node",
   model: {
     provider: "OPEN_AI",
-    name: "gpt-3.5-turbo",
+    name: "gpt-4",
     toolChoice: "auto",
   } as any,
 });
 
 
 // --- WORKFLOW DEFINITION ---
-const agenticsystem_workflow = new Workflow({
-  name: "AgenticSystem",
+const classifier_workflow = new Workflow({
+  name: "Classifier",
   triggerSchema: z.object({
     task: z.string(),
   }),
@@ -31,33 +31,28 @@ const agenticsystem_workflow = new Workflow({
 function printStructure(systemName: string, agents: any[]) {
     console.log("\n📊 MASTRA SYSTEM TOPOLOGY");
     console.log(`└── 📦 ${systemName}`);
-    console.log(`    │`);
     
+    if(agents.length === 0) {
+        console.log("    └── (No Agents Found)");
+        return;
+    }
+
     agents.forEach((agent, index) => {
         const isLast = index === agents.length - 1;
         const branch = isLast ? "└──" : "├──";
-        const role = agent.role || "Agent Role";
-        const model = agent.model?.name || "Unknown Model";
-        
         console.log(`    ${branch} 🤖 ${agent.name}`);
-        console.log(`    ${isLast ? "   " : "│  "}    ├── 📋 Role: ${role}`);
-        console.log(`    ${isLast ? "   " : "│  "}    └── 🧠 Model: ${model}`);
     });
     console.log("\n");
 }
 
 // --- EXECUTION BLOCK ---
 async function main() {
-  console.log("🚀 Starting Real Mastra Workflow: AgenticSystem");
+  console.log("🚀 Starting Real Mastra Workflow: Classifier");
   
-  // Ambil list agen untuk visualisasi
   const agentsList = [classifier_node] as any[];
-  
-  // Panggil fungsi visualisasi
-  printStructure("AgenticSystem", agentsList);
+  printStructure("Classifier", agentsList);
 
   console.log("✅ Workflow constructed successfully.");
-  console.log("   Ready to connect to LLM Provider.");
 }
 
 main();

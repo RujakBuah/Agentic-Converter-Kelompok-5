@@ -1,5 +1,5 @@
 # Generated LangGraph Framework
-# Source: code_review.rdf
+# Source: code_review.ttl
 # System: CodeReviewSystem
 
 from langgraph.graph import StateGraph, START, END
@@ -12,27 +12,24 @@ class GraphState(Dict):
 # --- NODE FUNCTIONS ---
 
 def reviewer_node(state: GraphState):
-    # Original Logic: Review code for quality and best practices
+    # Original Logic: Execute reviewer
     print(f"   [ACT] Node 'reviewer' is working...")
-    new_msg = f"Processed by reviewer"
-    return {"messages": [new_msg]}
+    return {"messages": ["Processed by reviewer_node"]}
 
 def tester_node(state: GraphState):
-    # Original Logic: Generate and run tests
+    # Original Logic: Execute tester
     print(f"   [ACT] Node 'tester' is working...")
-    new_msg = f"Processed by tester"
-    return {"messages": [new_msg]}
+    return {"messages": ["Processed by tester_node"]}
 
 
 # --- GRAPH CONSTRUCTION ---
 workflow = StateGraph(GraphState)
 
-workflow.add_node('reviewer', reviewer_node)
-workflow.add_edge('reviewer', 'tester')
-workflow.add_node('tester', tester_node)
-workflow.add_edge('tester', END)
-
-workflow.add_edge(START, 'reviewer')
+workflow.add_node('reviewer_node', reviewer_node)
+workflow.add_node('tester_node', tester_node)
+workflow.add_edge('reviewer_node', 'tester_node')
+workflow.add_edge(START, 'reviewer_node')
+workflow.add_edge('tester_node', END)
 
 app = workflow.compile()
 print(f"LangGraph 'CodeReviewSystem' compiled.")
@@ -40,11 +37,18 @@ print(f"LangGraph 'CodeReviewSystem' compiled.")
 
 if __name__ == "__main__":
     try:
-        print("Build success. Visualizing Graph...")
+        print("Build success. Generating Mermaid Graph...")
+        
+        # 1. Print Mermaid Code (Text) - Tetap berguna untuk debugging/copy-paste
         try:
-            print(app.get_graph().draw_ascii())
-        except Exception as e:
-            print(f"[Info] Visualisasi Gagal: {e}")
+            mermaid_code = app.get_graph().draw_mermaid()
+            print("\n--- MERMAID CODE (Copy to mermaid.live) ---")
+            print(mermaid_code)
+            print("-------------------------------------------\n")
+        except Exception:
+            print("[Info] Mermaid code generation failed (Graph might be empty).")
+
+        # Catatan: Image generation sekarang ditangani oleh 'visualize_batch.py'
 
         print("\n--- Starting Simulation ---")
         initial_state = {"messages": ["START_SIGNAL"]}

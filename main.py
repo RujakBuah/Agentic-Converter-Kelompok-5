@@ -3,64 +3,76 @@ import glob
 from extractor import extract_data
 from codegen import generate_mastra_code, generate_langgraph_code
 
-INPUT_DIR = "input_rdfs"
+# --- KONFIGURASI PATH BARU ---
+BASE_INPUT_DIR = "input_rdfs"
+SUB_DIRS = ["mastra", "langgraph"] # Dua folder kategori
+
 OUTPUT_DIR = "output_frameworks"
-MASTRA_PROJECT_DIR = "mastra_project" # Folder tempat Anda install npm tadi
+MASTRA_PROJECT_DIR = "mastra_project"
 
 def main():
-    # Folder output Python (LangGraph)
+    # Buat folder output
     langgraph_dir = os.path.join(OUTPUT_DIR, "langgraph")
     os.makedirs(langgraph_dir, exist_ok=True)
-    
-    # Folder output TypeScript (Mastra)
-    # Kita simpan langsung ke folder project node.js agar bisa di-run
     os.makedirs(MASTRA_PROJECT_DIR, exist_ok=True)
 
-    rdf_files = glob.glob(os.path.join(INPUT_DIR, "*.rdf"))
-    print(f"Found {len(rdf_files)} RDF files. Starting Polyglot Conversion...\n")
+    print(f"Starting Polyglot Conversion from '{BASE_INPUT_DIR}'...\n")
     
-    stats = {"success": 0, "failed": 0}
+    stats = {"success": 0, "failed": 0, "skipped": 0}
 
-    for rdf_file in rdf_files:
-        try:
-            print(f"Processing: {rdf_file}...")
-            data = extract_data(rdf_file)
-            
-            if not data["elements"]:
-                print(f"  [WARN] No agents/nodes found in {rdf_file}. Skipping.")
+    # Loop melalui setiap sub-folder (mastra dan langgraph)
+    for sub in SUB_DIRS:
+        current_input_path = os.path.join(BASE_INPUT_DIR, sub)
+        
+        # Cek apakah folder ada
+        if not os.path.exists(current_input_path):
+            print(f"[WARN] Folder not found: {current_input_path}. Skipping.")
+            continue
+
+        # Ambil semua file .ttl di folder tersebut
+        ttl_files = glob.glob(os.path.join(current_input_path, "*.ttl"))
+        print(f"--- Processing folder: /{sub} ({len(ttl_files)} files) ---")
+
+        for input_file in ttl_files:
+            try:
+                data = extract_data(input_file)
+                
+                # Jika tidak ada elemen sama sekali, skip
+                if not data["elements"]:
+                    print(f"  [SKIP] {data['filename']} (No valid agents/nodes found)")
+                    stats["skipped"] += 1
+                    continue
+
+                # 1. Generate MASTRA (TypeScript)
+                # Kita generate untuk semua, tapi biasanya lebih relevan untuk folder 'mastra'
+                mastra_code = generate_mastra_code(data)
+                mastra_filename = data["filename"].replace(".ttl", "_mastra.ts") 
+                mastra_path = os.path.join(MASTRA_PROJECT_DIR, mastra_filename)
+                
+                with open(mastra_path, "w", encoding="utf-8") as f:
+                    f.write(mastra_code)
+                
+                # 2. Generate LANGGRAPH (Python)
+                lg_code = generate_langgraph_code(data)
+                lg_filename = data["filename"].replace(".ttl", "_langgraph.py")
+                lg_path = os.path.join(langgraph_dir, lg_filename)
+                
+                with open(lg_path, "w", encoding="utf-8") as f:
+                    f.write(lg_code)
+
+                print(f"  [OK] {data['filename']} -> TS & PY generated.")
+                stats["success"] += 1
+
+            except Exception as e:
+                print(f"  [ERROR] {input_file}: {e}")
                 stats["failed"] += 1
-                continue
+        print("") # Newline antar folder
 
-            # 1. Generate MASTRA (TypeScript) -> Save ke mastra_project/
-            mastra_code = generate_mastra_code(data)
-            mastra_filename = data["filename"].replace(".rdf", "_mastra.ts") # .ts extension
-            mastra_path = os.path.join(MASTRA_PROJECT_DIR, mastra_filename)
-            
-            with open(mastra_path, "w", encoding="utf-8") as f:
-                f.write(mastra_code)
-            
-            # 2. Generate LANGGRAPH (Python) -> Save ke output_frameworks/langgraph/
-            lg_code = generate_langgraph_code(data)
-            lg_filename = data["filename"].replace(".rdf", "_langgraph.py")
-            lg_path = os.path.join(langgraph_dir, lg_filename)
-            
-            with open(lg_path, "w", encoding="utf-8") as f:
-                f.write(lg_code)
-
-            print(f"  [SUCCESS] Generated:")
-            print(f"     - TS: {mastra_path}")
-            print(f"     - PY: {lg_path}")
-            stats["success"] += 1
-
-        except Exception as e:
-            print(f"  [ERROR] Failed to process {rdf_file}: {e}")
-            stats["failed"] += 1
-
-    print("\n" + "="*30)
-    print("POLYGLOT CONVERSION SUMMARY")
     print("="*30)
-    print(f"Total Inputs           : {len(rdf_files)}")
-    print(f"Total Frameworks Built : {stats['success'] * 2}")
+    print("CONVERSION SUMMARY")
+    print("="*30)
+    print(f"Total Processed        : {stats['success'] + stats['failed'] + stats['skipped']}")
+    print(f"Success                : {stats['success']}")
     print(f"Mastra Location (TS)   : ./{MASTRA_PROJECT_DIR}/")
     print(f"LangGraph Location (PY): ./{langgraph_dir}/")
     print("="*30)

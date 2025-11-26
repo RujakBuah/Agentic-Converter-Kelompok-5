@@ -1,5 +1,5 @@
 // Generated Mastra AI Framework (TypeScript)
-// Source: code_review.rdf
+// Source: code_review.ttl
 // System: CodeReviewSystem
 
 import { Agent, Workflow } from '@mastra/core';
@@ -8,8 +8,8 @@ import { z } from 'zod';
 // --- AGENT DEFINITIONS ---
 
 const reviewer = new Agent({
-  name: "reviewer",
-  instructions: "Review code for quality and best practices",
+  name: "reviewer", 
+  instructions: "Execute reviewer",
   model: {
     provider: "OPEN_AI",
     name: "gpt-4",
@@ -18,8 +18,8 @@ const reviewer = new Agent({
 });
 
 const tester = new Agent({
-  name: "tester",
-  instructions: "Generate and run tests",
+  name: "tester", 
+  instructions: "Execute tester",
   model: {
     provider: "OPEN_AI",
     name: "gpt-4",
@@ -41,17 +41,16 @@ const codereviewsystem_workflow = new Workflow({
 function printStructure(systemName: string, agents: any[]) {
     console.log("\n📊 MASTRA SYSTEM TOPOLOGY");
     console.log(`└── 📦 ${systemName}`);
-    console.log(`    │`);
     
+    if(agents.length === 0) {
+        console.log("    └── (No Agents Found)");
+        return;
+    }
+
     agents.forEach((agent, index) => {
         const isLast = index === agents.length - 1;
         const branch = isLast ? "└──" : "├──";
-        const role = agent.role || "Agent Role";
-        const model = agent.model?.name || "Unknown Model";
-        
         console.log(`    ${branch} 🤖 ${agent.name}`);
-        console.log(`    ${isLast ? "   " : "│  "}    ├── 📋 Role: ${role}`);
-        console.log(`    ${isLast ? "   " : "│  "}    └── 🧠 Model: ${model}`);
     });
     console.log("\n");
 }
@@ -60,14 +59,10 @@ function printStructure(systemName: string, agents: any[]) {
 async function main() {
   console.log("🚀 Starting Real Mastra Workflow: CodeReviewSystem");
   
-  // Ambil list agen untuk visualisasi
   const agentsList = [reviewer, tester] as any[];
-  
-  // Panggil fungsi visualisasi
   printStructure("CodeReviewSystem", agentsList);
 
   console.log("✅ Workflow constructed successfully.");
-  console.log("   Ready to connect to LLM Provider.");
 }
 
 main();

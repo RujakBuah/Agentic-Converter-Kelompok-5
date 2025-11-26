@@ -1,0 +1,68 @@
+// Generated Mastra AI Framework (TypeScript)
+// Source: document_processor.ttl
+// System: DocumentProcessing
+
+import { Agent, Workflow } from '@mastra/core';
+import { z } from 'zod';
+
+// --- AGENT DEFINITIONS ---
+
+const parser = new Agent({
+  name: "parser", 
+  instructions: "Execute parser",
+  model: {
+    provider: "OPEN_AI",
+    name: "gpt-4",
+    toolChoice: "auto",
+  } as any,
+});
+
+const summarizer = new Agent({
+  name: "summarizer", 
+  instructions: "Execute summarizer",
+  model: {
+    provider: "OPEN_AI",
+    name: "gpt-4",
+    toolChoice: "auto",
+  } as any,
+});
+
+
+// --- WORKFLOW DEFINITION ---
+const documentprocessing_workflow = new Workflow({
+  name: "DocumentProcessing",
+  triggerSchema: z.object({
+    task: z.string(),
+  }),
+  agents: [parser, summarizer],
+} as any);
+
+// --- VISUALIZATION HELPER ---
+function printStructure(systemName: string, agents: any[]) {
+    console.log("\n📊 MASTRA SYSTEM TOPOLOGY");
+    console.log(`└── 📦 ${systemName}`);
+    
+    if(agents.length === 0) {
+        console.log("    └── (No Agents Found)");
+        return;
+    }
+
+    agents.forEach((agent, index) => {
+        const isLast = index === agents.length - 1;
+        const branch = isLast ? "└──" : "├──";
+        console.log(`    ${branch} 🤖 ${agent.name}`);
+    });
+    console.log("\n");
+}
+
+// --- EXECUTION BLOCK ---
+async function main() {
+  console.log("🚀 Starting Real Mastra Workflow: DocumentProcessing");
+  
+  const agentsList = [parser, summarizer] as any[];
+  printStructure("DocumentProcessing", agentsList);
+
+  console.log("✅ Workflow constructed successfully.");
+}
+
+main();
