@@ -107,14 +107,6 @@ npx tsx customer_support_mastra.ts
 ```
 *Expected Output:* System topology visualization and agent role verification.
 
-### Step 4: Generate Synthetic Data (Optional)
-To test the pipeline with more data (e.g., to reach 25 patterns), run the generator script:
-
-```bash
-python synthetic_data.py
-# Then run 'python main.py' again to process the new files.
-```
-
 ## 👥 Authors (Group 5)
 * Sultan Rizqinta Sinuraya (23/516307/PA/22087)
 * Muhammad Farhan Hanim (23/518027/PA/22230)
