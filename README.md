@@ -1,47 +1,54 @@
 # Agentic AI Framework Converter (Group 5)
 
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue) ![Mastra](https://img.shields.io/badge/Framework-Mastra_AI-orange) ![LangGraph](https://img.shields.io/badge/Framework-LangGraph-green)
+![Python](https://img.shields.io/badge/Python-3.12%2B-blue) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue) ![Mastra](https://img.shields.io/badge/Framework-Mastra_AI-orange) ![LangGraph](https://img.shields.io/badge/Framework-LangGraph-green)
 
-An automated pipeline designed to transform semantic Knowledge Graphs (RDF) into executable Agentic AI frameworks. This tool supports **polyglot generation**, converting a single RDF source pattern into both **LangGraph (Python)** and **Mastra AI (TypeScript)** implementations.
+An automated pipeline designed to transform semantic Knowledge Graphs (RDF/Turtle) into executable Agentic AI frameworks. This tool supports **polyglot generation**, converting semantic source patterns into both **LangGraph (Python)** and **Mastra AI (TypeScript)** implementations.
 
-Developed for the **Agentic AI Framework** course assignment (Week 3), based on the semantic foundations outlined in the *K-CAP 2025* paper.
+Developed for the **Agentic AI Framework** course assignment, based on the semantic foundations outlined in the *K-CAP 2025* paper.
 
 ## Key Features
 
-* **Dual-Framework Generation:** Automatically converts RDF definitions into:
+* **Polyglot Input Handling:** Smartly processes two types of input definitions:
+    * **Type 1 (Structural):** Low-level graph definitions (Nodes, Edges, Start/End) optimized for LangGraph.
+    * **Type 2 (Agentic):** High-level agent roles and instructions optimized for Mastra AI.
+* **Dual-Framework Generation:** Automatically converts `.ttl` files into:
     * **LangGraph:** Graph-based stateful orchestration (Python).
     * **Mastra AI:** Agent-centric orchestration (TypeScript).
-* **Robust RDF Parsing:** Handles RDF files with or without standard header prefixes via a resilient extractor.
-* **Runnable Output:** Generated code includes execution blocks with state simulation and ASCII visualizations.
-* **Synthetic Data Generator:** Includes a tool to generate synthetic RDF patterns to test scalability (supports 25+ patterns).
+* **Batch Execution & Logging:** Includes an automated runner (`run_experiments.py`) to execute all generated frameworks and log results.
+* **Advanced Visualization:** Generates **Mermaid.js** diagrams and automatically saves them as PNG images via a batch visualizer.
+* **Robust Extraction:** Features "Heuristic Extraction" to recover node definitions even from abstract schema files.
 
 ## Project Structure
 
 ```text
 Agentic-Converter-Kelompok-5/
-├── input_rdfs/              # Source Knowledge Graphs (.rdf files)
-├── output_frameworks/       # Generated LangGraph code
-│   └── langgraph/           # Python files (.py)
+├── input_rdfs/              # Source Knowledge Graphs (.ttl files)
+│   ├── langgraph/           # Type 1: Structural definitions (e.g., aggregator, classifier)
+│   └── mastra/              # Type 2: Agentic definitions (e.g., code_review, customer_support)
+├── output_frameworks/
+│   └── langgraph/           # Generated LangGraph Python code (.py)
 ├── mastra_project/          # Generated Mastra AI project & code
-│   ├── node_modules/        # Node.js dependencies (ignored in git)
+│   ├── node_modules/        # Node.js dependencies
 │   ├── package.json         # Mastra configuration
-│   └── ..._mastra.ts        # TypeScript files (.ts)
-├── codegen.py               # Template engine (Python & TypeScript generation logic)
-├── extractor.py             # RDF parsing logic
-├── main.py                  # Main orchestration pipeline
-├── synthetic_data.py        # Script to generate dummy RDF patterns
+│   └── ..._mastra.ts        # Generated TypeScript files
+├── execution_results/       # [NEW] Logs & ASCII outputs from batch execution
+├── graph_visualizations/    # [NEW] Generated Mermaid Graph PNGs
+├── codegen.py               # Template engine (Code generation logic)
+├── extractor.py             # RDF parsing & heuristic logic
+├── main.py                  # Main orchestration pipeline (Polyglot Converter)
+├── run_experiments.py       # Batch runner for Python frameworks
+├── visualize_batch.py       # Batch PNG generator for Graphs
 └── requirements.txt         # Python dependencies
 ```
 
 ## Installation & Setup
 
-This project requires **Python** and **Node.js**. Follow these steps to set up the environment.
+This project requires **Python**. Follow these steps to set up the environment.
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/RujakBuah/Agentic-Converter-Kelompok-5.git
+git clone [https://github.com/RujakBuah/Agentic-Converter-Kelompok-5.git](https://github.com/RujakBuah/Agentic-Converter-Kelompok-5.git)
 cd Agentic-Converter-Kelompok-5
-git checkout week3
 ```
 
 ### 2. Python Setup (for Pipeline & LangGraph)
@@ -55,7 +62,7 @@ python -m venv venv
 # Activate environment
 venv\Scripts\activate
 
-# Install dependencies
+# Install dependencies (ensure grandalf and other libs are installed)
 pip install -r requirements.txt
 ```
 
@@ -66,7 +73,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Node.js Setup (for Mastra AI)
+### 3. Node.js Setup (Optional, for Mastra AI)
 Navigate to the Mastra project folder and install dependencies.
 
 ```bash
@@ -79,24 +86,31 @@ cd ..
 
 ## How to Run
 
-### Step 1: Generate Frameworks
-Run the main pipeline to read all RDF files from `input_rdfs/` and generate the corresponding code.
+### Step 1: Generate Frameworks (Polyglot Conversion)
+Run the main pipeline. This will scan both `input_rdfs/langgraph` and `input_rdfs/mastra` folders and generate the corresponding code.
 
 ```bash
 python main.py
 ```
-*Output:* You will see logs indicating successful conversion for both Mastra and LangGraph formats.
+*Output:* You will see logs indicating successful conversion (e.g., `[OK] aggregator.ttl -> TS & PY generated`).
 
-### Step 2: Run Generated LangGraph Code (Python)
-The generated Python files are located in `output_frameworks/langgraph/`.
+### Step 2: Batch Execute Frameworks (Python)
+Instead of running files manually, use the experiment runner to execute all generated LangGraph frameworks at once. This script handles encoding safety and captures logs.
 
 ```bash
-# Example: Running the Customer Support system
-python output_frameworks/langgraph/customer_support_langgraph.py
+python run_experiments.py
 ```
-*Expected Output:* ASCII graph visualization and state execution logs.
+*Output:* Check the **`execution_results/`** folder. You will find text files containing execution logs and simulation outputs for each framework.
 
-### Step 3: Run Generated Mastra Code (TypeScript)
+### Step 3: Generate Visualizations (Mermaid PNG)
+To generate visual representations of the workflows (Shapes & Lines), run the visualization script. *Requires active internet connection to render Mermaid diagrams.*
+
+```bash
+python visualize_batch.py
+```
+*Output:* Check the **`graph_visualizations/`** folder. You will find `.png` images representing the graph topology for each system.
+
+### Step 4: Run Generated Mastra Code (TypeScript, Optional)
 The generated TypeScript files are located in `mastra_project/`. Use `npx tsx` to execute them directly.
 
 ```bash
@@ -105,12 +119,12 @@ cd mastra_project
 # Example: Running the Customer Support system
 npx tsx customer_support_mastra.ts
 ```
-*Expected Output:* System topology visualization and agent role verification.
+*Expected Output:* System topology visualization and agent role verification in the console.
 
-## 👥 Authors (Group 5)
+## Authors (Group 5)
 * Sultan Rizqinta Sinuraya (23/516307/PA/22087)
 * Muhammad Farhan Hanim (23/518027/PA/22230)
 * Muhammad Fariz (23/518174/PA/22237)
 
 ---
-*Note: The `node_modules` folder is excluded from this repository to ensure a lightweight clone. You must run `npm install` inside `mastra_project` before running any TypeScript files.*
+*Note: The `node_modules` folder is excluded from this repository to ensure a lightweight clone.*
