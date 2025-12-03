@@ -5,3 +5,4 @@ pyparsing==3.2.5
 PyYAML==6.0.3
 rdflib==7.4.0
 black==23.7.0
+langgraph>=0.0.1
